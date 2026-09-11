@@ -49,13 +49,13 @@ Add `mime` to the `[dependencies]` section in your `alya.toml`:
 
 ```toml
 [dependencies]
-mime = { git = "https://github.com/alya-lang/mime", tag = "v0.1.0" }
+mime = { git = "https://github.com/alya-lang/mime", branch = "main" }
 ```
 
 Or install it directly using the Alya package CLI:
 
 ```bash
-alyac add mime --git https://github.com/alya-lang/mime --tag v0.1.0
+alyac add mime --git https://github.com/alya-lang/mime --branch main
 alyac install
 ```
 
