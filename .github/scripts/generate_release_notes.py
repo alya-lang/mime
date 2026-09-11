@@ -225,10 +225,10 @@ def main():
 
     # 8. Substitute Placeholders
     replacements = {
-        "mime": pkg_name,
+        "{{PACKAGE_NAME}}": pkg_name,
         "{{TAG}}": tag,
         "{{VERSION}}": version,
-        "Zero-dependency MIME type and media type detection library for Alya": description,
+        "{{DESCRIPTION}}": description,
         "{{REPOSITORY}}": repo,
         "{{REPO_URL}}": repo_url,
         "{{MIN_ALYA_VERSION}}": alya_version,
