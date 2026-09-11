@@ -1,0 +1,42 @@
+# MIME Charset and Media Classification
+# Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+
+import "../types.alya"
+
+function is_text_type(essence)
+    let s = _mime_trim(essence)
+    let slen = len(s)
+    if slen >= 5 and substring(s, 0, 5) == "text/"
+        return 1
+    end
+
+    when s
+        is "application/javascript", "text/javascript", "application/json", "application/ld+json", "application/manifest+json", "application/xml", "image/svg+xml", "application/x-sh", "application/sql", "application/x-httpd-php", "application/rtf" then return 1
+        else return 0
+    end
+end
+
+function is_binary_type(essence)
+    if is_text_type(essence) == 1
+        return 0
+    end
+    return 1
+end
+
+function default_charset_for_mime(essence)
+    if is_text_type(essence) == 1
+        return "utf-8"
+    end
+    return ""
+end
+
+function format_content_type(essence, custom_charset = "")
+    let cs = custom_charset
+    if len(cs) == 0
+        cs = default_charset_for_mime(essence)
+    end
+    if len(cs) > 0
+        return essence + "; charset=" + cs
+    end
+    return essence
+end

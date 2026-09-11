@@ -1,26 +1,63 @@
 # Benchmark suite for mime
 import "std/bench"
-import "../src/lib.alya" as pkg
+import "../src/lib.alya" as mime
 
 function main()
     let runner = bench_runner("mime Micro-Benchmarks")
 
+    # 1. Fast extension lookup
     bench_start(runner, 100000)
     let i = 0
     while i < 100000
-        pkg::hello("Alya")
+        mime::lookup("index.html")
         i += 1
     end
-    bench_stop(runner, "hello() 100k calls")
+    bench_stop(runner, "lookup() direct filename 100k")
 
+    # 2. Path and URL parsing + lookup
     bench_start(runner, 50000)
     let j = 0
     while j < 50000
-        let cfg = pkg::new_config("Bench", 1)
-        pkg::core_format_custom(cfg)
+        mime::lookup("/static/assets/css/theme.min.css?v=2.0#dark")
         j += 1
     end
-    bench_stop(runner, "new_config() + format_custom() 50k calls")
+    bench_stop(runner, "lookup() path with url queries 50k")
+
+    # 3. Content-Type header formatting
+    bench_start(runner, 50000)
+    let k = 0
+    while k < 50000
+        mime::content_type("app.js")
+        k += 1
+    end
+    bench_stop(runner, "content_type() header generation 50k")
+
+    # 4. Reverse lookup (mime -> extension)
+    bench_start(runner, 50000)
+    let m = 0
+    while m < 50000
+        mime::extension("application/json")
+        m += 1
+    end
+    bench_stop(runner, "extension() reverse lookup 50k")
+
+    # 5. Media classification (is_text)
+    bench_start(runner, 50000)
+    let n = 0
+    while n < 50000
+        mime::is_text("/public/bundle.js")
+        n += 1
+    end
+    bench_stop(runner, "is_text() classification 50k")
+
+    # 6. Content-Type header parser (struct allocation)
+    bench_start(runner, 50000)
+    let p = 0
+    while p < 50000
+        mime::parse("text/html; charset=utf-8")
+        p += 1
+    end
+    bench_stop(runner, "parse() struct instantiation 50k")
 
     bench_summary(runner)
 end

@@ -1,0 +1,80 @@
+# MIME Content-Type Header Parser
+# Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+
+import "../types.alya"
+import "./charset.alya"
+
+function _extract_charset_param(params_str)
+    let s = lower(params_str)
+    let idx = _mime_index_of(s, "charset=")
+    if idx < 0
+        return ""
+    end
+
+    let val_start = idx + 8
+    let plen = len(params_str)
+    while val_start < plen and char_at(params_str, val_start) == " "
+        val_start += 1
+    end
+    if val_start >= plen
+        return ""
+    end
+
+    let first_ch = char_at(params_str, val_start)
+    if first_ch == "\""
+        val_start += 1
+        let val_end = val_start
+        while val_end < plen and char_at(params_str, val_end) != "\""
+            val_end += 1
+        end
+        return lower(substring(params_str, val_start, val_end - val_start))
+    end
+
+    let val_end = val_start
+    while val_end < plen
+        let ch = char_at(params_str, val_end)
+        if ch == ";" or ch == " " or ch == "\t" or ch == "\r" or ch == "\n"
+            break
+        end
+        val_end += 1
+    end
+    return lower(substring(params_str, val_start, val_end - val_start))
+end
+
+function parse_content_type(header_str)
+    let trimmed = _mime_trim(header_str)
+    let tlen = len(trimmed)
+    if tlen == 0
+        return mime_type_new("application/octet-stream", "application", "octet-stream", "", 0)
+    end
+
+    let semi_idx = _mime_index_of(trimmed, ";")
+    let raw_essence = trimmed
+    let params = ""
+    if semi_idx >= 0
+        raw_essence = substring(trimmed, 0, semi_idx)
+        if semi_idx + 1 < tlen
+            params = substring(trimmed, semi_idx + 1, tlen - semi_idx - 1)
+        end
+    end
+
+    let essence = lower(_mime_trim(raw_essence))
+    let elen = len(essence)
+    let slash_idx = _mime_index_of(essence, "/")
+    let type_name = essence
+    let subtype = ""
+    if slash_idx >= 0
+        type_name = substring(essence, 0, slash_idx)
+        if slash_idx + 1 < elen
+            subtype = substring(essence, slash_idx + 1, elen - slash_idx - 1)
+        end
+    end
+
+    let cs = _extract_charset_param(params)
+    let is_txt = is_text_type(essence)
+    if len(cs) == 0 and is_txt == 1
+        cs = default_charset_for_mime(essence)
+    end
+
+    return mime_type_new(essence, type_name, subtype, cs, is_txt)
+end

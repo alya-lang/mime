@@ -1,28 +1,100 @@
-# Test suite for mime
+# Test suite for mime package
 import "std/test"
-import "../src/lib.alya" as pkg
+import "../src/lib.alya" as mime
 
 function main()
-    test_suite("mime Test Suite")
+    test_suite("mime Package Test Suite")
     let r = runner_new()
 
-    # 1. Basic facade function
-    let res = pkg::hello("Alya")
-    runner_assert_str_eq(r, res, "Hello, Alya!", "pkg::hello returns formatted greeting")
+    # 1. Extension lookup
+    runner_assert_str_eq(r, mime::lookup("html"), "text/html", "lookup('html') -> text/html")
+    runner_assert_str_eq(r, mime::lookup(".css"), "text/css", "lookup('.css') -> text/css")
+    runner_assert_str_eq(r, mime::lookup("JSON"), "application/json", "lookup('JSON') case-insensitive")
+    runner_assert_str_eq(r, mime::lookup(".PNG"), "image/png", "lookup('.PNG') -> image/png")
+    runner_assert_str_eq(r, mime::lookup("wasm"), "application/wasm", "lookup('wasm') -> application/wasm")
+    runner_assert_str_eq(r, mime::lookup("alya"), "text/x-alya", "lookup('alya') -> text/x-alya")
 
-    # 2. Default parameter
-    let default_res = pkg::hello()
-    runner_assert_str_eq(r, default_res, "Hello, World!", "pkg::hello() uses default name")
+    # 2. Lookup defaults and fallbacks
+    runner_assert_str_eq(r, mime::lookup("unknown_ext"), "application/octet-stream", "lookup default is octet-stream")
+    runner_assert_str_eq(r, mime::lookup("unknown_ext", "text/plain"), "text/plain", "lookup custom default fallback")
 
-    # 3. Modular types & config constructor
-    let cfg = pkg::new_config("Community", 3)
-    runner_assert_str_eq(r, cfg.name, "Community", "pkg::new_config sets name correctly")
-    runner_assert_str_eq(r, cfg.prefix, "Hello", "pkg::new_config sets default prefix")
-    runner_assert_eq(r, cfg.count, 3, "pkg::new_config sets count correctly")
+    # 3. Path, URL, and query string extraction
+    runner_assert_str_eq(r, mime::lookup("/var/www/site/index.html"), "text/html", "lookup path with forward slashes")
+    runner_assert_str_eq(r, mime::lookup("C:\\Users\\alice\\app.js"), "application/javascript", "lookup path with backslashes")
+    runner_assert_str_eq(r, mime::lookup("archive.tar.gz"), "application/gzip", "lookup multi-dot archive")
+    runner_assert_str_eq(r, mime::lookup("styles.min.css?v=1.2#theme"), "text/css", "lookup url with query and hash")
+    runner_assert_str_eq(r, mime::lookup("/etc/hosts"), "application/octet-stream", "extensionless file in path")
+    runner_assert_str_eq(r, mime::lookup("Makefile"), "application/octet-stream", "extensionless filename")
 
-    # 4. Core custom formatter using struct
-    let custom_res = pkg::core_format_custom(cfg)
-    runner_assert_str_eq(r, custom_res, "Hello, Community!", "pkg::core_format_custom formats using config")
+    # 4. Raw type_by_ext
+    runner_assert_str_eq(r, mime::type_by_ext("html"), "text/html", "type_by_ext('html')")
+    runner_assert_str_eq(r, mime::type_by_ext(".json"), "application/json", "type_by_ext('.json')")
+    runner_assert_str_eq(r, mime::type_by_ext("not_found"), "", "type_by_ext unknown returns empty")
+
+    # 5. Full Content-Type header with charset
+    runner_assert_str_eq(r, mime::content_type("index.html"), "text/html; charset=utf-8", "content_type for html has utf-8")
+    runner_assert_str_eq(r, mime::content_type("style.css"), "text/css; charset=utf-8", "content_type for css has utf-8")
+    runner_assert_str_eq(r, mime::content_type("app.js"), "application/javascript; charset=utf-8", "content_type for js has utf-8")
+    runner_assert_str_eq(r, mime::content_type("data.json"), "application/json; charset=utf-8", "content_type for json has utf-8")
+    runner_assert_str_eq(r, mime::content_type("hero.png"), "image/png", "content_type for png has no charset")
+    runner_assert_str_eq(r, mime::content_type("music.mp3"), "audio/mpeg", "content_type for mp3 has no charset")
+    runner_assert_str_eq(r, mime::content_type("movie.mp4"), "video/mp4", "content_type for mp4 has no charset")
+    runner_assert_str_eq(r, mime::content_type("binary.bin"), "application/octet-stream", "content_type fallback")
+
+    # 6. Reverse lookup (mime -> extension)
+    runner_assert_str_eq(r, mime::extension("text/html"), "html", "extension('text/html') -> html")
+    runner_assert_str_eq(r, mime::extension("text/html; charset=utf-8"), "html", "extension with params -> html")
+    runner_assert_str_eq(r, mime::extension("application/json"), "json", "extension('application/json') -> json")
+    runner_assert_str_eq(r, mime::extension("image/png"), "png", "extension('image/png') -> png")
+    runner_assert_str_eq(r, mime::extension("application/wasm"), "wasm", "extension('application/wasm') -> wasm")
+    runner_assert_str_eq(r, mime::extension("application/pdf"), "pdf", "extension('application/pdf') -> pdf")
+    runner_assert_str_eq(r, mime::extension("video/mp4"), "mp4", "extension('video/mp4') -> mp4")
+    runner_assert_str_eq(r, mime::extension("unknown/type"), "", "extension unknown -> empty")
+
+    # 7. Media type classification: is_text & is_binary
+    runner_assert_eq(r, mime::is_text("text/html"), 1, "is_text('text/html') is 1")
+    runner_assert_eq(r, mime::is_text("application/json"), 1, "is_text('application/json') is 1")
+    runner_assert_eq(r, mime::is_text("page.html"), 1, "is_text('page.html') is 1")
+    runner_assert_eq(r, mime::is_text("image/png"), 0, "is_text('image/png') is 0")
+    runner_assert_eq(r, mime::is_text("photo.jpg"), 0, "is_text('photo.jpg') is 0")
+
+    runner_assert_eq(r, mime::is_binary("image/png"), 1, "is_binary('image/png') is 1")
+    runner_assert_eq(r, mime::is_binary("app.wasm"), 1, "is_binary('app.wasm') is 1")
+    runner_assert_eq(r, mime::is_binary("text/html"), 0, "is_binary('text/html') is 0")
+    runner_assert_eq(r, mime::is_binary("main.alya"), 0, "is_binary('main.alya') is 0")
+
+    # 8. Charset & with_charset
+    runner_assert_str_eq(r, mime::charset("index.html"), "utf-8", "charset('index.html') is utf-8")
+    runner_assert_str_eq(r, mime::charset("data.json"), "utf-8", "charset('data.json') is utf-8")
+    runner_assert_str_eq(r, mime::charset("image/png"), "", "charset('image/png') is empty")
+    runner_assert_str_eq(r, mime::with_charset("text/html", "iso-8859-1"), "text/html; charset=iso-8859-1", "with_charset custom")
+
+    # 9. Parsing Content-Type header
+    let parsed_html = mime::parse("text/html; charset=utf-8")
+    runner_assert_str_eq(r, parsed_html.essence, "text/html", "parse essence")
+    runner_assert_str_eq(r, parsed_html.type_name, "text", "parse type_name")
+    runner_assert_str_eq(r, parsed_html.subtype, "html", "parse subtype")
+    runner_assert_str_eq(r, parsed_html.charset, "utf-8", "parse charset")
+    runner_assert_eq(r, parsed_html.is_text, 1, "parse is_text")
+    runner_assert_eq(r, parsed_html.is_binary, 0, "parse is_binary")
+
+    let parsed_json = mime::parse("application/json")
+    runner_assert_str_eq(r, parsed_json.essence, "application/json", "parse json essence")
+    runner_assert_str_eq(r, parsed_json.type_name, "application", "parse json type_name")
+    runner_assert_str_eq(r, parsed_json.subtype, "json", "parse json subtype")
+    runner_assert_str_eq(r, parsed_json.charset, "utf-8", "parse json default charset")
+
+    let parsed_png = mime::parse("image/png")
+    runner_assert_str_eq(r, parsed_png.essence, "image/png", "parse png essence")
+    runner_assert_str_eq(r, parsed_png.type_name, "image", "parse png type_name")
+    runner_assert_str_eq(r, parsed_png.subtype, "png", "parse png subtype")
+    runner_assert_str_eq(r, parsed_png.charset, "", "parse png has empty charset")
+    runner_assert_eq(r, parsed_png.is_text, 0, "parse png is_text 0")
+    runner_assert_eq(r, parsed_png.is_binary, 1, "parse png is_binary 1")
+
+    # 10. Format roundtrip
+    runner_assert_str_eq(r, mime::format(parsed_html), "text/html; charset=utf-8", "format html roundtrip")
+    runner_assert_str_eq(r, mime::format(parsed_png), "image/png", "format png roundtrip")
 
     let failed = runner_summary(r)
     if failed > 0

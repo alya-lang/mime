@@ -1,0 +1,218 @@
+# MIME Registry Database
+# Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+
+function db_lookup_ext(ext)
+    when ext
+        # Web & Markup
+        is "html", "htm", "shtml" then return "text/html"
+        is "css" then return "text/css"
+        is "js", "mjs", "cjs" then return "application/javascript"
+        is "json", "map" then return "application/json"
+        is "jsonld" then return "application/ld+json"
+        is "manifest", "webmanifest" then return "application/manifest+json"
+        is "xml", "xsl", "xsd" then return "application/xml"
+        is "wasm" then return "application/wasm"
+
+        # Text & Data
+        is "txt", "text", "conf", "def", "list", "log", "in", "ini" then return "text/plain"
+        is "csv" then return "text/csv"
+        is "tsv" then return "text/tab-separated-values"
+        is "md", "markdown" then return "text/markdown"
+        is "yaml", "yml" then return "text/yaml"
+        is "toml" then return "text/toml"
+        is "rtf" then return "application/rtf"
+        is "pdf" then return "application/pdf"
+
+        # Code & Scripts
+        is "alya" then return "text/x-alya"
+        is "c", "h" then return "text/x-c"
+        is "cpp", "cc", "cxx", "hpp" then return "text/x-c++"
+        is "rs" then return "text/x-rust"
+        is "py" then return "text/x-python"
+        is "rb" then return "text/x-ruby"
+        is "go" then return "text/x-go"
+        is "java" then return "text/x-java-source"
+        is "sh", "bash" then return "application/x-sh"
+        is "sql" then return "application/sql"
+        is "lua" then return "text/x-lua"
+        is "php" then return "application/x-httpd-php"
+        is "ts" then return "video/mp2t"
+
+        # Images
+        is "png" then return "image/png"
+        is "jpg", "jpeg", "jpe" then return "image/jpeg"
+        is "gif" then return "image/gif"
+        is "webp" then return "image/webp"
+        is "avif" then return "image/avif"
+        is "svg", "svgz" then return "image/svg+xml"
+        is "ico" then return "image/x-icon"
+        is "bmp" then return "image/bmp"
+        is "tiff", "tif" then return "image/tiff"
+        is "heic" then return "image/heic"
+        is "heif" then return "image/heif"
+        is "apng" then return "image/apng"
+
+        # Audio
+        is "mp3" then return "audio/mpeg"
+        is "wav" then return "audio/wav"
+        is "ogg", "oga", "opus" then return "audio/ogg"
+        is "flac" then return "audio/flac"
+        is "aac" then return "audio/aac"
+        is "m4a" then return "audio/mp4"
+        is "weba" then return "audio/webm"
+        is "mid", "midi" then return "audio/midi"
+        is "wma" then return "audio/x-ms-wma"
+
+        # Video
+        is "mp4", "m4v" then return "video/mp4"
+        is "webm" then return "video/webm"
+        is "ogv" then return "video/ogg"
+        is "avi" then return "video/x-msvideo"
+        is "mov", "qt" then return "video/quicktime"
+        is "mkv" then return "video/x-matroska"
+        is "flv" then return "video/x-flv"
+        is "wmv" then return "video/x-ms-wmv"
+
+        # Fonts
+        is "woff" then return "font/woff"
+        is "woff2" then return "font/woff2"
+        is "ttf" then return "font/ttf"
+        is "otf" then return "font/otf"
+        is "eot" then return "application/vnd.ms-fontobject"
+
+        # Archives & Compressed
+        is "zip" then return "application/zip"
+        is "tar" then return "application/x-tar"
+        is "gz", "tgz" then return "application/gzip"
+        is "bz", "bz2" then return "application/x-bzip2"
+        is "7z" then return "application/x-7z-compressed"
+        is "rar" then return "application/vnd.rar"
+        is "xz" then return "application/x-xz"
+        is "zst" then return "application/zstd"
+        is "jar" then return "application/java-archive"
+        is "iso" then return "application/x-iso9660-image"
+        is "dmg" then return "application/x-apple-diskimage"
+
+        # Office & Documents
+        is "doc" then return "application/msword"
+        is "docx" then return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        is "xls" then return "application/vnd.ms-excel"
+        is "xlsx" then return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        is "ppt" then return "application/vnd.ms-powerpoint"
+        is "pptx" then return "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        is "odt" then return "application/vnd.oasis.opendocument.text"
+        is "ods" then return "application/vnd.oasis.opendocument.spreadsheet"
+        is "odp" then return "application/vnd.oasis.opendocument.presentation"
+        is "epub" then return "application/epub+zip"
+
+        else return ""
+    end
+end
+
+function db_lookup_mime_ext(essence)
+    when essence
+        # Web & Markup
+        is "text/html" then return "html"
+        is "text/css" then return "css"
+        is "application/javascript", "text/javascript" then return "js"
+        is "application/json" then return "json"
+        is "application/ld+json" then return "jsonld"
+        is "application/manifest+json" then return "webmanifest"
+        is "application/xml", "text/xml" then return "xml"
+        is "application/wasm" then return "wasm"
+
+        # Text & Data
+        is "text/plain" then return "txt"
+        is "text/csv" then return "csv"
+        is "text/tab-separated-values" then return "tsv"
+        is "text/markdown" then return "md"
+        is "text/yaml" then return "yaml"
+        is "text/toml" then return "toml"
+        is "application/rtf" then return "rtf"
+        is "application/pdf" then return "pdf"
+
+        # Code
+        is "text/x-alya" then return "alya"
+        is "text/x-c" then return "c"
+        is "text/x-c++" then return "cpp"
+        is "text/x-rust" then return "rs"
+        is "text/x-python" then return "py"
+        is "text/x-ruby" then return "rb"
+        is "text/x-go" then return "go"
+        is "text/x-java-source" then return "java"
+        is "application/x-sh" then return "sh"
+        is "application/sql" then return "sql"
+        is "text/x-lua" then return "lua"
+        is "application/x-httpd-php" then return "php"
+
+        # Images
+        is "image/png" then return "png"
+        is "image/jpeg" then return "jpg"
+        is "image/gif" then return "gif"
+        is "image/webp" then return "webp"
+        is "image/avif" then return "avif"
+        is "image/svg+xml" then return "svg"
+        is "image/x-icon" then return "ico"
+        is "image/bmp" then return "bmp"
+        is "image/tiff" then return "tiff"
+        is "image/heic" then return "heic"
+        is "image/heif" then return "heif"
+        is "image/apng" then return "apng"
+
+        # Audio
+        is "audio/mpeg" then return "mp3"
+        is "audio/wav" then return "wav"
+        is "audio/ogg" then return "ogg"
+        is "audio/flac" then return "flac"
+        is "audio/aac" then return "aac"
+        is "audio/mp4" then return "m4a"
+        is "audio/webm" then return "weba"
+        is "audio/midi" then return "midi"
+        is "audio/x-ms-wma" then return "wma"
+
+        # Video
+        is "video/mp4" then return "mp4"
+        is "video/webm" then return "webm"
+        is "video/ogg" then return "ogv"
+        is "video/x-msvideo" then return "avi"
+        is "video/quicktime" then return "mov"
+        is "video/x-matroska" then return "mkv"
+        is "video/x-flv" then return "flv"
+        is "video/x-ms-wmv" then return "wmv"
+        is "video/mp2t" then return "ts"
+
+        # Fonts
+        is "font/woff" then return "woff"
+        is "font/woff2" then return "woff2"
+        is "font/ttf" then return "ttf"
+        is "font/otf" then return "otf"
+        is "application/vnd.ms-fontobject" then return "eot"
+
+        # Archives & Compressed
+        is "application/zip" then return "zip"
+        is "application/x-tar" then return "tar"
+        is "application/gzip" then return "gz"
+        is "application/x-bzip2" then return "bz2"
+        is "application/x-7z-compressed" then return "7z"
+        is "application/vnd.rar" then return "rar"
+        is "application/x-xz" then return "xz"
+        is "application/zstd" then return "zst"
+        is "application/java-archive" then return "jar"
+        is "application/x-iso9660-image" then return "iso"
+        is "application/x-apple-diskimage" then return "dmg"
+
+        # Office
+        is "application/msword" then return "doc"
+        is "application/vnd.openxmlformats-officedocument.wordprocessingml.document" then return "docx"
+        is "application/vnd.ms-excel" then return "xls"
+        is "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" then return "xlsx"
+        is "application/vnd.ms-powerpoint" then return "ppt"
+        is "application/vnd.openxmlformats-officedocument.presentationml.presentation" then return "pptx"
+        is "application/vnd.oasis.opendocument.text" then return "odt"
+        is "application/vnd.oasis.opendocument.spreadsheet" then return "ods"
+        is "application/vnd.oasis.opendocument.presentation" then return "odp"
+        is "application/epub+zip" then return "epub"
+
+        else return ""
+    end
+end

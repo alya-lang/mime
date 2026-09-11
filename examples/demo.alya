@@ -1,15 +1,66 @@
-# Example usage of mime
-import "../src/lib.alya" as pkg
+# Realistic example: HTTP static file dispatcher & content negotiation
+import "../src/lib.alya" as mime
+
+function handle_static_request(request_path)
+    say "──────────────────────────────────────────────"
+    say "Request: " + request_path
+
+    # 1. Detect MIME essence
+    let essence = mime::lookup(request_path)
+    say "  MIME Essence: " + essence
+
+    # 2. Get full HTTP Content-Type header with appropriate charset
+    let header = mime::content_type(request_path)
+    say "  Content-Type: " + header
+
+    # 3. Check compression suitability (text/json/svg vs binary)
+    if mime::is_text(request_path)
+        say "  Compression:  Eligible for Gzip/Brotli"
+    else
+        say "  Compression:  Binary stream (transfer verbatim)"
+    end
+
+    # 4. Reverse extension mapping
+    let ext = mime::extension(essence)
+    say "  Canonical Ext: ." + ext
+end
 
 function main()
-    # Basic greeting
-    let msg = pkg::hello("Alya Developer")
-    say msg
+    say "=============================================="
+    say "    Alya MIME Static File Dispatcher Demo     "
+    say "=============================================="
 
-    # Using configuration struct
-    let cfg = pkg::new_config("Modular Architecture", 5)
-    say "Target: " + cfg.name
-    say "Formatted: " + pkg::core_format_custom(cfg)
+    let test_files = [
+        "/public/index.html",
+        "/assets/css/theme.min.css?v=2.4.0",
+        "/scripts/bundle.js",
+        "/api/v1/metrics.json",
+        "/static/logo.svg",
+        "/media/avatar.png",
+        "/audio/podcast_ep1.mp3",
+        "/wasm/engine.wasm",
+        "/docs/specification.pdf",
+        "/source/algorithm.alya",
+        "/unknown/blob.dat"
+    ]
+
+    let i = 0
+    while i < len(test_files)
+        handle_static_request(test_files[i])
+        i += 1
+    end
+
+    say "──────────────────────────────────────────────"
+    say "\nParsing Incoming HTTP Request Headers:"
+    let req_header = "application/json; charset=utf-8"
+    let parsed = mime::parse(req_header)
+    say "  Input:        " + req_header
+    say "  Type:         " + parsed.type_name
+    say "  Subtype:      " + parsed.subtype
+    say "  Charset:      " + parsed.charset
+    say "  Is Text:      " + str(parsed.is_text)
+    say "  Re-formatted: " + mime::format(parsed)
+    say "=============================================="
 end
 
 main()
