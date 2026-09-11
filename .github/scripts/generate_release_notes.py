@@ -201,21 +201,21 @@ def main():
         template = template_path.read_text(encoding="utf-8")
     else:
         template = (
-            "Zero-dependency MIME type and media type detection library for Alya\n\n"
+            "{{DESCRIPTION}}\n\n"
             "## 📦 Installation\n\n"
-            "Add `mime` to your `alya.toml`:\n\n"
-            "```toml\n"
-            "[dependencies]\n"
-            'mime = "{{VERSION}}"\n'
+            "Using the Alya CLI:\n\n"
+            "```bash\n"
+            "alyac add {{PACKAGE_NAME}} --git https://github.com/{{REPOSITORY}} --tag {{TAG}}\n"
+            "alyac install\n"
             "```\n\n"
-            "Or reference directly via Git:\n\n"
+            "Or add it directly to your project's `alya.toml`:\n\n"
             "```toml\n"
             "[dependencies]\n"
-            'mime = { git = "https://github.com/{{REPOSITORY}}.git", tag = "{{TAG}}" }\n'
+            '{{PACKAGE_NAME}} = { git = "https://github.com/{{REPOSITORY}}", tag = "{{TAG}}" }\n'
             "```\n\n"
             "## 🚀 What's Changed\n\n"
             "{{CHANGELOG_COMMITS}}\n\n"
-            "## 🔗 Useful Links\n\n"
+            "## 🔗 Resources\n\n"
             "- **Documentation**: [README.md](https://github.com/{{REPOSITORY}}#readme)\n"
             "- **Examples**: [examples/](https://github.com/{{REPOSITORY}}/tree/{{TAG}}/examples)\n"
             "- **Issue Tracker**: [GitHub Issues](https://github.com/{{REPOSITORY}}/issues)\n\n"
