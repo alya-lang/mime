@@ -5,7 +5,7 @@
 [![Alya](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Falya-lang%2Fmime%2Fmain%2Falya.toml&query=%24.package.alya-version&label=Alya&color=orange&prefix=%3E%3D)](https://github.com/alya-lang/alya)
 [![Package Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Falya-lang%2Fmime%2Fmain%2Falya.toml&query=%24.package.version&label=Version&color=brightgreen)](alya.toml)
 
-Zero-dependency MIME type and media type detection library for Alya.
+MIME type and media type detection library for Alya.
 
 ---
 
@@ -18,7 +18,6 @@ Zero-dependency MIME type and media type detection library for Alya.
 - 🔄 **Bidirectional Lookups**: Fast extension-to-MIME forward lookup and MIME-to-extension reverse lookup.
 - 🔍 **Media Classification**: Instant `is_text` and `is_binary` inspection for HTTP gzip/brotli compression gating or file upload verification.
 - 🧩 **RFC Header Parser**: Parses complex `Content-Type` strings (with parameters and custom charsets) into structured `MimeType` records.
-- 📦 **Zero Dependencies**: 100% pure Alya code.
 
 ---
 
@@ -170,13 +169,20 @@ alyac run examples/demo.alya
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps to contribute:
+Contributions are welcome! Please follow these steps:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes (`git commit -m 'feat: add my feature'`)
-4. Push to the branch (`git push origin feature/my-feature`)
-5. Open a Pull Request
+1. Fork the repository and clone it locally
+2. Install dependencies:
+   ```bash
+   alyac install
+   ```
+3. Create your feature branch (`git checkout -b feature/my-feature`)
+4. Verify tests and formatting before opening a PR:
+   ```bash
+   alyac test
+   alyac fmt . --check
+   ```
+5. Commit your changes (`git commit -m "feat: add feature"`) and open a Pull Request
 
 ---
 
