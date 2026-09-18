@@ -115,11 +115,9 @@ main()
 | `parse(header_str)` | `header_str: string` | `MimeType` | Parses a `Content-Type` header into a structured `MimeType` instance. |
 | `format(mime_obj)` | `mime_obj: MimeType` | `string` | Formats a `MimeType` struct back into a `Content-Type` string. |
 
----
+### Data Structures
 
-## 🧩 Data Structures
-
-### `MimeType`
+#### `MimeType`
 
 ```alya
 struct MimeType
@@ -134,12 +132,18 @@ end
 
 ---
 
-## 🧪 Running Tests & Benchmarks
+## 🧪 Running Tests, Benchmarks & Documentation
 
-Run the test suite using `alya`:
+Run the automated test suite using `alya test`:
 
 ```bash
-alya run tests/test_basic.alya
+alya test
+```
+
+Generate static API documentation:
+
+```bash
+alya doc . -o docs --markdown
 ```
 
 Run the benchmark suite:
@@ -148,21 +152,16 @@ Run the benchmark suite:
 alya run benches/bench_basic.alya
 ```
 
-Sample benchmark output:
-
-| Method                               | Mean (ns/op) | Total Time | Ratio | Allocated |   Throughput |
-|:-------------------------------------|-------------:|-----------:|------:|----------:|-------------:|
-| lookup() direct filename 100k        |       290 ns |      29 ms |  1.00 |         - |   3.4M ops/s |
-| lookup() path with url queries 50k   |         1 µs |      55 ms |  3.79 |         - |   909K ops/s |
-| content_type() header generation 50k |       360 ns |      18 ms |  1.24 |         - |   2.8M ops/s |
-| extension() reverse lookup 50k       |       260 ns |      13 ms |  0.89 |         - |   3.8M ops/s |
-| is_text() classification 50k         |       520 ns |      26 ms |  1.79 |         - |   1.9M ops/s |
-| parse() struct instantiation 50k     |       660 ns |      33 ms |  2.27 |      72 B |   1.5M ops/s |
-
 Run the realistic HTTP file server dispatcher demo:
 
 ```bash
 alya run examples/demo.alya
+```
+
+Check code formatting:
+
+```bash
+alya fmt . --check
 ```
 
 ---
