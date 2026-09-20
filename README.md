@@ -36,7 +36,7 @@ mime/
 ├── examples/
 │   └── demo.alya           # HTTP file server dispatcher example
 ├── tests/
-│   └── test_basic.alya     # Automated test suite (64 assertions)
+│   └── test_basic.alya     # Automated test suite (73 assertions)
 └── benches/
     └── bench_basic.alya    # Micro-benchmarks
 ```
@@ -115,12 +115,28 @@ main()
 | `parse(header_str)` | `header_str: string` | `MimeType` | Parses a `Content-Type` header into a structured `MimeType` instance. |
 | `format(mime_obj)` | `mime_obj: MimeType` | `string` | Formats a `MimeType` struct back into a `Content-Type` string. |
 
-### Data Structures
+### Data Structures & Enums
+
+#### `MimeCategory`
+
+```alya
+pub enum MimeCategory
+    Text = 1,
+    Image = 2,
+    Audio = 3,
+    Video = 4,
+    Application = 5,
+    Font = 6,
+    Model = 7,
+    Multipart = 8,
+    Other = 9
+end
+```
 
 #### `MimeType`
 
 ```alya
-struct MimeType
+pub struct MimeType
     essence      # "text/html"
     type_name    # "text"
     subtype      # "html"
@@ -128,6 +144,11 @@ struct MimeType
     is_text      # 1 or 0
     is_binary    # 1 or 0
 end
+
+# Struct Methods:
+# - parsed.is_text() -> 1 or 0
+# - parsed.is_binary() -> 1 or 0
+# - parsed.to_string() -> formatted header string (e.g. "text/html; charset=utf-8")
 ```
 
 ---

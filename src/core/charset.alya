@@ -3,7 +3,8 @@
 
 import "../types.alya"
 
-function is_text_type(essence)
+## Returns 1 if given MIME essence is text-based / human readable, 0 otherwise.
+pub function is_text_type(essence)
     let s = _mime_trim(essence)
     let slen = len(s)
     if slen >= 5 and substring(s, 0, 5) == "text/"
@@ -16,21 +17,24 @@ function is_text_type(essence)
     end
 end
 
-function is_binary_type(essence)
+## Returns 1 if given MIME essence represents binary data, 0 otherwise.
+pub function is_binary_type(essence)
     if is_text_type(essence) == 1
         return 0
     end
     return 1
 end
 
-function default_charset_for_mime(essence)
+## Returns default charset ("utf-8" for text types, "" for binary types).
+pub function default_charset_for_mime(essence)
     if is_text_type(essence) == 1
         return "utf-8"
     end
     return ""
 end
 
-function format_content_type(essence, custom_charset = "")
+## Formats full Content-Type header string with charset parameter if applicable.
+pub function format_content_type(essence, custom_charset = "")
     let cs = custom_charset
     if len(cs) == 0
         cs = default_charset_for_mime(essence)

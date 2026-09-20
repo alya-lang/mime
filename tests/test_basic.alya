@@ -96,6 +96,18 @@ function main()
     runner_assert_str_eq(r, mime::format(parsed_html), "text/html; charset=utf-8", "format html roundtrip")
     runner_assert_str_eq(r, mime::format(parsed_png), "image/png", "format png roundtrip")
 
+    # 11. Modern features & struct methods
+    runner_assert_eq(r, parsed_html.is_text(), 1, "parsed_html.is_text() struct method")
+    runner_assert_eq(r, parsed_png.is_binary(), 1, "parsed_png.is_binary() struct method")
+    runner_assert_str_eq(r, parsed_html.to_string(), "text/html; charset=utf-8", "parsed_html.to_string() struct method")
+    runner_assert_str_eq(r, parsed_png.to_string(), "image/png", "parsed_png.to_string() struct method")
+
+    runner_assert_eq(r, mime::MimeCategory.Text, 1, "MimeCategory.Text equals 1")
+    runner_assert_eq(r, mime::MimeCategory.Image, 2, "MimeCategory.Image equals 2")
+    runner_assert_eq(r, mime::MimeCategory.Audio, 3, "MimeCategory.Audio equals 3")
+    runner_assert_eq(r, mime::MimeCategory.Video, 4, "MimeCategory.Video equals 4")
+    runner_assert_eq(r, mime::MimeCategory.Application, 5, "MimeCategory.Application equals 5")
+
     let failed = runner_summary(r)
     if failed > 0
         exit(1)

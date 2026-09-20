@@ -1,16 +1,49 @@
 # Types and data structures for mime
 # Part of the Alya Language package ecosystem (https://github.com/alya-lang)
 
-struct MimeType
-    essence
-    type_name
-    subtype
-    charset
-    is_text
+## Public enumeration of primary MIME categories.
+pub enum MimeCategory
+    Text = 1,
+    Image = 2,
+    Audio = 3,
+    Video = 4,
+    Application = 5,
+    Font = 6,
+    Model = 7,
+    Multipart = 8,
+    Other = 9
+end
+
+## Structured representation of a parsed MIME media type with parameters.
+pub struct MimeType
+    essence,
+    type_name,
+    subtype,
+    charset,
+    is_text,
     is_binary
 end
 
-function mime_type_new(essence, type_name, subtype, charset = "", is_text = 0)
+## Struct method: returns 1 if media type is text-based, 0 otherwise.
+pub function MimeType.is_text(self)
+    return self.is_text == 1
+end
+
+## Struct method: returns 1 if media type is binary data, 0 otherwise.
+pub function MimeType.is_binary(self)
+    return self.is_binary == 1
+end
+
+## Struct method: formats the MimeType back into a Content-Type string.
+pub function MimeType.to_string(self)
+    if len(self.charset) > 0
+        return self.essence + "; charset=" + self.charset
+    end
+    return self.essence
+end
+
+## Factory function to construct a new MimeType struct instance.
+pub function mime_type_new(essence, type_name, subtype, charset = "", is_text = 0)
     let is_bin = 1
     if is_text == 1
         is_bin = 0
@@ -25,7 +58,8 @@ function mime_type_new(essence, type_name, subtype, charset = "", is_text = 0)
     }
 end
 
-function _mime_trim(s)
+## Trims leading and trailing whitespace from string.
+pub function _mime_trim(s)
     let slen = len(s)
     if slen == 0
         return ""
@@ -52,7 +86,8 @@ function _mime_trim(s)
     return substring(s, start_idx, end_idx - start_idx + 1)
 end
 
-function _mime_clean_path(s)
+## Cleans path by trimming whitespace and stripping query strings or URL fragments.
+pub function _mime_clean_path(s)
     let trimmed = _mime_trim(s)
     let slen = len(trimmed)
     if slen == 0
@@ -75,7 +110,8 @@ function _mime_clean_path(s)
     return trimmed
 end
 
-function _mime_index_of(haystack, needle)
+## Finds first index of needle within haystack, returning -1 if not found.
+pub function _mime_index_of(haystack, needle)
     let hlen = len(haystack)
     let nlen = len(needle)
     if nlen == 0
@@ -95,7 +131,8 @@ function _mime_index_of(haystack, needle)
     return -1
 end
 
-function extract_ext(input_str)
+## Extracts clean lowercased file extension from path, filename, or URL string.
+pub function extract_ext(input_str)
     let s = _mime_clean_path(input_str)
     let slen = len(s)
     if slen == 0

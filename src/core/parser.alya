@@ -4,6 +4,7 @@
 import "../types.alya"
 import "./charset.alya"
 
+# Internal helper to parse charset parameter from header parameters segment
 function _extract_charset_param(params_str)
     let s = lower(params_str)
     let idx = _mime_index_of(s, "charset=")
@@ -41,7 +42,8 @@ function _extract_charset_param(params_str)
     return lower(substring(params_str, val_start, val_end - val_start))
 end
 
-function parse_content_type(header_str)
+## Parses a Content-Type header string into a structured MimeType struct instance.
+pub function parse_content_type(header_str)
     let trimmed = _mime_trim(header_str)
     let tlen = len(trimmed)
     if tlen == 0
