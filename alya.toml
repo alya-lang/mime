@@ -11,3 +11,7 @@ repository = "https://github.com/alya-lang/mime"
 keywords = ["alya", "alya-lang", "package", "mime", "media-type", "content-type", "http", "web"]
 
 [dependencies]
+
+# [lint]
+# disabled_rules = []
+# exclude = []
