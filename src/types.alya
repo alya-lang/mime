@@ -1,5 +1,10 @@
-# Types and data structures for mime
-# Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+## # mime/types
+##
+## Types and data structures for MIME.
+## Part of the Alya Language package ecosystem (https://github.com/alya-lang).
+##
+## Defines media categories, the parsed `MimeType` model, and path and
+## extension inspection helpers.
 
 ## Public enumeration of primary MIME categories.
 pub enum MimeCategory
@@ -15,35 +20,71 @@ pub enum MimeCategory
 end
 
 ## Structured representation of a parsed MIME media type with parameters.
+##
+## ### Fields
+## - `essence`: Full essence string (e.g. `"text/html"`).
+## - `type_name`: Primary type segment (e.g. `"text"`).
+## - `subtype`: Subtype segment (e.g. `"html"`).
+## - `charset`: Charset parameter (e.g. `"utf-8"`), or `""`.
+## - `is_text`: `1` for text-based types, `0` otherwise.
+## - `is_binary`: `1` for binary types, `0` otherwise.
 pub struct MimeType
-    essence,
-    type_name,
-    subtype,
-    charset,
-    is_text,
-    is_binary
+    essence: string,
+    type_name: string,
+    subtype: string,
+    charset: string,
+    is_text: int,
+    is_binary: int
 end
 
-## Struct method: returns 1 if media type is text-based, 0 otherwise.
-pub function MimeType.is_text(self)
+## Returns `1` when this media type is text-based, `0` otherwise.
+##
+## ### Parameters
+## - `self`: The target `MimeType` instance.
+##
+## ### Returns
+## `1` for text types, `0` otherwise.
+pub function MimeType.is_text(self: MimeType) -> int
     return self.is_text == 1
 end
 
-## Struct method: returns 1 if media type is binary data, 0 otherwise.
-pub function MimeType.is_binary(self)
+## Returns `1` when this media type is binary data, `0` otherwise.
+##
+## ### Parameters
+## - `self`: The target `MimeType` instance.
+##
+## ### Returns
+## `1` for binary types, `0` otherwise.
+pub function MimeType.is_binary(self: MimeType) -> int
     return self.is_binary == 1
 end
 
-## Struct method: formats the MimeType back into a Content-Type string.
-pub function MimeType.to_string(self)
+## Formats this `MimeType` back into a Content-Type string.
+##
+## ### Parameters
+## - `self`: The target `MimeType` instance.
+##
+## ### Returns
+## The Content-Type string with charset when present.
+pub function MimeType.to_string(self: MimeType) -> string
     if len(self.charset) > 0
-        return self.essence + "; charset=" + self.charset
+        return "{self.essence}; charset={self.charset}"
     end
     return self.essence
 end
 
-## Factory function to construct a new MimeType struct instance.
-pub function mime_type_new(essence, type_name, subtype, charset = "", is_text = 0)
+## Factory constructor building a `MimeType` with a derived binary flag.
+##
+## ### Parameters
+## - `essence`: Full essence string.
+## - `type_name`: Primary type segment.
+## - `subtype`: Subtype segment.
+## - `charset`: Charset parameter. Defaults to `""`.
+## - `is_text`: `1` for text-based types. Defaults to `0`.
+##
+## ### Returns
+## The new `MimeType` instance.
+pub function mime_type_new(essence: string, type_name: string, subtype: string, charset: string = "", is_text: int = 0) -> MimeType
     let is_bin = 1
     if is_text == 1
         is_bin = 0
@@ -58,8 +99,14 @@ pub function mime_type_new(essence, type_name, subtype, charset = "", is_text = 
     }
 end
 
-## Trims leading and trailing whitespace from string.
-pub function _mime_trim(s)
+## Trims leading and trailing whitespace from a string.
+##
+## ### Parameters
+## - `s`: Input string.
+##
+## ### Returns
+## The trimmed string.
+pub function _mime_trim(s: string) -> string
     let slen = len(s)
     if slen == 0
         return ""
@@ -86,8 +133,14 @@ pub function _mime_trim(s)
     return substring(s, start_idx, end_idx - start_idx + 1)
 end
 
-## Cleans path by trimming whitespace and stripping query strings or URL fragments.
-pub function _mime_clean_path(s)
+## Cleans a path by trimming whitespace and stripping query/fragment parts.
+##
+## ### Parameters
+## - `s`: Input path string.
+##
+## ### Returns
+## The cleaned path string.
+pub function _mime_clean_path(s: string) -> string
     let trimmed = _mime_trim(s)
     let slen = len(trimmed)
     if slen == 0
@@ -110,8 +163,15 @@ pub function _mime_clean_path(s)
     return trimmed
 end
 
-## Finds first index of needle within haystack, returning -1 if not found.
-pub function _mime_index_of(haystack, needle)
+## Finds the first index of a needle within a haystack (`-1` if absent).
+##
+## ### Parameters
+## - `haystack`: Haystack string.
+## - `needle`: Needle string.
+##
+## ### Returns
+## The match index, or `-1` when absent (`0` for empty needles).
+pub function _mime_index_of(haystack: string, needle: string) -> int
     let hlen = len(haystack)
     let nlen = len(needle)
     if nlen == 0
@@ -131,8 +191,19 @@ pub function _mime_index_of(haystack, needle)
     return -1
 end
 
-## Extracts clean lowercased file extension from path, filename, or URL string.
-pub function extract_ext(input_str)
+## Extracts a clean lowercased file extension from a path or URL.
+##
+## ### Parameters
+## - `input_str`: Path, filename, or URL string.
+##
+## ### Returns
+## The extension without dot (empty when absent).
+##
+## ### Examples
+## ```alya
+## say extract_ext("/a/b.html?x=1") # "html"
+## ```
+pub function extract_ext(input_str: string) -> string
     let s = _mime_clean_path(input_str)
     let slen = len(s)
     if slen == 0

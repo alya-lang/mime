@@ -1,4 +1,8 @@
-# Realistic example: HTTP static file dispatcher & content negotiation
+## Demo of the mime package
+##
+## Shows static file dispatch and content negotiation by path.
+## Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+
 import "../src/lib.alya" as mime
 
 function handle_static_request(request_path)

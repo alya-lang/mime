@@ -1,8 +1,16 @@
-# MIME Registry Database
-# Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+## # mime/core/db
+##
+## MIME registry database mapping extensions to essences and back.
+## Part of the Alya Language package ecosystem (https://github.com/alya-lang).
 
 ## Looks up the MIME essence string associated with a file extension.
-pub function db_lookup_ext(ext)
+##
+## ### Parameters
+## - `ext`: Lowercase extension string (without dot).
+##
+## ### Returns
+## The MIME essence string (empty when unknown).
+pub function db_lookup_ext(ext: string) -> string
     when ext
         # Web & Markup
         is "html", "htm", "shtml" then return "text/html"
@@ -110,8 +118,14 @@ pub function db_lookup_ext(ext)
     end
 end
 
-## Reverse lookup: returns the canonical file extension for a given MIME essence string.
-pub function db_lookup_mime_ext(essence)
+## Reverse lookup: returns the canonical file extension for a MIME essence.
+##
+## ### Parameters
+## - `essence`: MIME essence string.
+##
+## ### Returns
+## The extension string (empty when unknown).
+pub function db_lookup_mime_ext(essence: string) -> string
     when essence
         # Web & Markup
         is "text/html" then return "html"

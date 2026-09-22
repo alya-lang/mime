@@ -1,10 +1,18 @@
-# MIME Charset and Media Classification
-# Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+## # mime/core/charset
+##
+## MIME charset and media classification.
+## Part of the Alya Language package ecosystem (https://github.com/alya-lang).
 
 import "../types.alya"
 
-## Returns 1 if given MIME essence is text-based / human readable, 0 otherwise.
-pub function is_text_type(essence)
+## Returns `1` when a MIME essence is text-based, `0` otherwise.
+##
+## ### Parameters
+## - `essence`: MIME essence string.
+##
+## ### Returns
+## `1` for text types, `0` otherwise.
+pub function is_text_type(essence: string) -> int
     let s = _mime_trim(essence)
     let slen = len(s)
     if slen >= 5 and substring(s, 0, 5) == "text/"
@@ -17,30 +25,49 @@ pub function is_text_type(essence)
     end
 end
 
-## Returns 1 if given MIME essence represents binary data, 0 otherwise.
-pub function is_binary_type(essence)
+## Returns `1` when a MIME essence represents binary data, `0` otherwise.
+##
+## ### Parameters
+## - `essence`: MIME essence string.
+##
+## ### Returns
+## `1` for binary types, `0` otherwise.
+pub function is_binary_type(essence: string) -> int
     if is_text_type(essence) == 1
         return 0
     end
     return 1
 end
 
-## Returns default charset ("utf-8" for text types, "" for binary types).
-pub function default_charset_for_mime(essence)
+## Returns the default charset (`"utf-8"` for text types, `""` otherwise).
+##
+## ### Parameters
+## - `essence`: MIME essence string.
+##
+## ### Returns
+## The default charset string.
+pub function default_charset_for_mime(essence: string) -> string
     if is_text_type(essence) == 1
         return "utf-8"
     end
     return ""
 end
 
-## Formats full Content-Type header string with charset parameter if applicable.
-pub function format_content_type(essence, custom_charset = "")
+## Formats a full Content-Type header with a charset parameter when applicable.
+##
+## ### Parameters
+## - `essence`: MIME essence string.
+## - `custom_charset`: Override charset. Defaults to `""` (auto-detected).
+##
+## ### Returns
+## The Content-Type header string.
+pub function format_content_type(essence: string, custom_charset: string = "") -> string
     let cs = custom_charset
     if len(cs) == 0
         cs = default_charset_for_mime(essence)
     end
     if len(cs) > 0
-        return essence + "; charset=" + cs
+        return "{essence}; charset={cs}"
     end
     return essence
 end

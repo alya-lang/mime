@@ -1,5 +1,10 @@
-# mime library
-# Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+## # mime
+##
+## MIME library for Alya.
+## Part of the Alya Language package ecosystem (https://github.com/alya-lang).
+##
+## Looks up media types by path or extension, classifies text versus binary
+## payloads, and parses Content-Type headers into structured models.
 
 import "./types.alya"
 import "./core/db.alya"
@@ -10,9 +15,20 @@ import "./core/parser.alya"
 # Public API Facade
 # ═══════════════════════════════════════════════════════════════
 
-## Looks up MIME essence for a path, filename, or extension (e.g. "text/html").
-## Returns default_type ("application/octet-stream" by default) if not found.
-pub function lookup(path_or_ext, default_type = "application/octet-stream")
+## Looks up the MIME essence for a path, filename, or extension.
+##
+## ### Parameters
+## - `path_or_ext`: Path, filename, or extension string.
+## - `default_type`: Fallback essence. Defaults to `"application/octet-stream"`.
+##
+## ### Returns
+## The MIME essence string (e.g. `"text/html"`).
+##
+## ### Examples
+## ```alya
+## say lookup("page.html") # "text/html"
+## ```
+pub function lookup(path_or_ext: string, default_type: string = "application/octet-stream") -> string
     let ext = extract_ext(path_or_ext)
     if len(ext) > 0
         let m = db_lookup_ext(ext)
@@ -23,8 +39,14 @@ pub function lookup(path_or_ext, default_type = "application/octet-stream")
     return default_type
 end
 
-## Looks up raw MIME essence strictly by extension without fallback (returns "" if unknown).
-pub function type_by_ext(ext)
+## Looks up the raw MIME essence strictly by extension (`""` when unknown).
+##
+## ### Parameters
+## - `ext`: Extension or path string.
+##
+## ### Returns
+## The MIME essence string, or `""` when unknown.
+pub function type_by_ext(ext: string) -> string
     let clean = extract_ext(ext)
     if len(clean) == 0
         return ""
@@ -32,8 +54,15 @@ pub function type_by_ext(ext)
     return db_lookup_ext(clean)
 end
 
-## Returns full Content-Type header with charset if applicable (e.g. "text/html; charset=utf-8").
-pub function content_type(path_or_ext, default_type = "application/octet-stream")
+## Returns the full Content-Type header with charset when applicable.
+##
+## ### Parameters
+## - `path_or_ext`: Path, filename, or extension string.
+## - `default_type`: Fallback essence. Defaults to `"application/octet-stream"`.
+##
+## ### Returns
+## The Content-Type header string (e.g. `"text/html; charset=utf-8"`).
+pub function content_type(path_or_ext: string, default_type: string = "application/octet-stream") -> string
     let ext = extract_ext(path_or_ext)
     let essence = ""
     if len(ext) > 0
@@ -47,8 +76,14 @@ pub function content_type(path_or_ext, default_type = "application/octet-stream"
     return format_content_type(essence)
 end
 
-## Reverse lookup: returns default file extension for a MIME type (e.g. "text/html" -> "html").
-pub function extension(mime_type)
+## Reverse lookup: returns the default file extension for a MIME type.
+##
+## ### Parameters
+## - `mime_type`: MIME type string (parameters tolerated).
+##
+## ### Returns
+## The extension string (e.g. `"text/html"` yields `"html"`).
+pub function extension(mime_type: string) -> string
     let s = _mime_trim(mime_type)
     let semi = _mime_index_of(s, ";")
     let essence = s
@@ -59,8 +94,14 @@ pub function extension(mime_type)
     return db_lookup_mime_ext(essence)
 end
 
-## Returns 1 if given path, extension, or MIME type is text-based / human readable, 0 otherwise.
-pub function is_text(path_or_mime)
+## Returns `1` when a path, extension, or MIME type is text-based.
+##
+## ### Parameters
+## - `path_or_mime`: Path, extension, or MIME type string.
+##
+## ### Returns
+## `1` for text types, `0` otherwise.
+pub function is_text(path_or_mime: string) -> int
     let ext = extract_ext(path_or_mime)
     let essence = ""
     if len(ext) > 0
@@ -79,16 +120,28 @@ pub function is_text(path_or_mime)
     return is_text_type(essence)
 end
 
-## Returns 1 if given path, extension, or MIME type is binary data, 0 otherwise.
-pub function is_binary(path_or_mime)
+## Returns `1` when a path, extension, or MIME type is binary data.
+##
+## ### Parameters
+## - `path_or_mime`: Path, filename, extension, or MIME type string.
+##
+## ### Returns
+## `1` for binary types, `0` otherwise.
+pub function is_binary(path_or_mime: string) -> int
     if is_text(path_or_mime) == 1
         return 0
     end
     return 1
 end
 
-## Returns default charset for a given path, extension, or MIME type ("utf-8" or "").
-pub function charset(path_or_mime)
+## Returns the default charset for a path, extension, or MIME type.
+##
+## ### Parameters
+## - `path_or_mime`: Path, extension, or MIME type string.
+##
+## ### Returns
+## `"utf-8"` for text types, `""` otherwise.
+pub function charset(path_or_mime: string) -> string
     let ext = extract_ext(path_or_mime)
     let essence = ""
     if len(ext) > 0
@@ -107,21 +160,40 @@ pub function charset(path_or_mime)
     return default_charset_for_mime(essence)
 end
 
-## Appends charset parameter to a MIME essence string.
-pub function with_charset(mime_essence, charset_name = "utf-8")
+## Appends a charset parameter to a MIME essence string.
+##
+## ### Parameters
+## - `mime_essence`: MIME essence string.
+## - `charset_name`: Charset name. Defaults to `"utf-8"`.
+##
+## ### Returns
+## The parameterized essence string.
+pub function with_charset(mime_essence: string, charset_name: string = "utf-8") -> string
     let s = _mime_trim(mime_essence)
-    return s + "; charset=" + charset_name
+    return "{s}; charset={charset_name}"
 end
 
-## Parses a Content-Type header string into a structured MimeType instance.
-pub function parse(header_str)
+## Parses a Content-Type header string into a `MimeType` instance.
+##
+## ### Parameters
+## - `header_str`: Raw Content-Type header string.
+##
+## ### Returns
+## The parsed `MimeType` instance.
+pub function parse(header_str: string) -> MimeType
     return parse_content_type(header_str)
 end
 
-## Formats a MimeType instance back into a Content-Type string.
-pub function format(mime_obj)
+## Formats a `MimeType` instance back into a Content-Type string.
+##
+## ### Parameters
+## - `mime_obj`: Target `MimeType` instance.
+##
+## ### Returns
+## The Content-Type string with charset when present.
+pub function format(mime_obj: MimeType) -> string
     if len(mime_obj.charset) > 0
-        return mime_obj.essence + "; charset=" + mime_obj.charset
+        return "{mime_obj.essence}; charset={mime_obj.charset}"
     end
     return mime_obj.essence
 end

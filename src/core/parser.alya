@@ -1,11 +1,13 @@
-# MIME Content-Type Header Parser
-# Part of the Alya Language package ecosystem (https://github.com/alya-lang)
+## # mime/core/parser
+##
+## MIME Content-Type header parser.
+## Part of the Alya Language package ecosystem (https://github.com/alya-lang).
 
 import "../types.alya"
 import "./charset.alya"
 
-# Internal helper to parse charset parameter from header parameters segment
-function _extract_charset_param(params_str)
+# Parses the charset parameter from a header parameters segment.
+function _extract_charset_param(params_str: string) -> string
     let s = lower(params_str)
     let idx = _mime_index_of(s, "charset=")
     if idx < 0
@@ -42,8 +44,21 @@ function _extract_charset_param(params_str)
     return lower(substring(params_str, val_start, val_end - val_start))
 end
 
-## Parses a Content-Type header string into a structured MimeType struct instance.
-pub function parse_content_type(header_str)
+## Parses a Content-Type header into a structured `MimeType` instance.
+##
+## Unknown or empty headers fall back to `application/octet-stream`.
+##
+## ### Parameters
+## - `header_str`: Raw Content-Type header string.
+##
+## ### Returns
+## The parsed `MimeType` instance.
+##
+## ### Examples
+## ```alya
+## let m = parse_content_type("text/html; charset=utf-8")
+## ```
+pub function parse_content_type(header_str: string) -> MimeType
     let trimmed = _mime_trim(header_str)
     let tlen = len(trimmed)
     if tlen == 0
