@@ -7,6 +7,7 @@
 ## payloads, and parses Content-Type headers into structured models.
 
 import "./types.alya"
+@cfg(feature = "db")
 import "./core/db.alya"
 import "./core/charset.alya"
 import "./core/parser.alya"
@@ -28,6 +29,9 @@ import "./core/parser.alya"
 ## ```alya
 ## say lookup("page.html") # "text/html"
 ## ```
+##
+## Requires the `db` feature (default-on).
+@cfg(feature = "db")
 pub function lookup(path_or_ext: string, default_type: string = "application/octet-stream") -> string
     let ext = extract_ext(path_or_ext)
     if len(ext) > 0
@@ -41,11 +45,14 @@ end
 
 ## Looks up the raw MIME essence strictly by extension (`""` when unknown).
 ##
+## Requires the `db` feature (default-on).
+##
 ## ### Parameters
 ## - `ext`: Extension or path string.
 ##
 ## ### Returns
 ## The MIME essence string, or `""` when unknown.
+@cfg(feature = "db")
 pub function type_by_ext(ext: string) -> string
     let clean = extract_ext(ext)
     if len(clean) == 0
@@ -56,12 +63,15 @@ end
 
 ## Returns the full Content-Type header with charset when applicable.
 ##
+## Requires the `db` feature (default-on).
+##
 ## ### Parameters
 ## - `path_or_ext`: Path, filename, or extension string.
 ## - `default_type`: Fallback essence. Defaults to `"application/octet-stream"`.
 ##
 ## ### Returns
 ## The Content-Type header string (e.g. `"text/html; charset=utf-8"`).
+@cfg(feature = "db")
 pub function content_type(path_or_ext: string, default_type: string = "application/octet-stream") -> string
     let ext = extract_ext(path_or_ext)
     let essence = ""
@@ -78,11 +88,14 @@ end
 
 ## Reverse lookup: returns the default file extension for a MIME type.
 ##
+## Requires the `db` feature (default-on).
+##
 ## ### Parameters
 ## - `mime_type`: MIME type string (parameters tolerated).
 ##
 ## ### Returns
 ## The extension string (e.g. `"text/html"` yields `"html"`).
+@cfg(feature = "db")
 pub function extension(mime_type: string) -> string
     let s = _mime_trim(mime_type)
     let semi = _mime_index_of(s, ";")
@@ -102,8 +115,10 @@ end
 ## ### Returns
 ## `1` for text types, `0` otherwise.
 pub function is_text(path_or_mime: string) -> int
+    @cfg(feature = "db")
     let ext = extract_ext(path_or_mime)
     let essence = ""
+    @cfg(feature = "db")
     if len(ext) > 0
         essence = db_lookup_ext(ext)
     end
@@ -142,8 +157,10 @@ end
 ## ### Returns
 ## `"utf-8"` for text types, `""` otherwise.
 pub function charset(path_or_mime: string) -> string
+    @cfg(feature = "db")
     let ext = extract_ext(path_or_mime)
     let essence = ""
+    @cfg(feature = "db")
     if len(ext) > 0
         essence = db_lookup_ext(ext)
     end

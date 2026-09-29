@@ -12,6 +12,10 @@ keywords = ["alya", "alya-lang", "package", "mime", "media-type", "content-type"
 
 [dependencies]
 
+[features]
+default = ["db"]
+db = []
+
 # [lint]
 # disabled_rules = []
 # exclude = []

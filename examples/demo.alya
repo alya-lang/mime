@@ -5,6 +5,7 @@
 
 import "../src/lib.alya" as mime
 
+@cfg(feature = "db")
 function handle_static_request(request_path)
     say "──────────────────────────────────────────────"
     say "Request: " + request_path
@@ -34,6 +35,24 @@ function main()
     say "    Alya MIME Static File Dispatcher Demo     "
     say "=============================================="
 
+    @cfg(feature = "db")
+    demo_dispatch()
+
+    say "──────────────────────────────────────────────"
+    say "\nParsing Incoming HTTP Request Headers:"
+    let req_header = "application/json; charset=utf-8"
+    let parsed = mime::parse(req_header)
+    say "  Input:        " + req_header
+    say "  Type:         " + parsed.type_name
+    say "  Subtype:      " + parsed.subtype
+    say "  Charset:      " + parsed.charset
+    say "  Is Text:      " + str(parsed.is_text)
+    say "  Re-formatted: " + mime::format(parsed)
+    say "=============================================="
+end
+
+@cfg(feature = "db")
+function demo_dispatch()
     let test_files = [
         "/public/index.html",
         "/assets/css/theme.min.css?v=2.4.0",
@@ -53,18 +72,6 @@ function main()
         handle_static_request(test_files[i])
         i += 1
     end
-
-    say "──────────────────────────────────────────────"
-    say "\nParsing Incoming HTTP Request Headers:"
-    let req_header = "application/json; charset=utf-8"
-    let parsed = mime::parse(req_header)
-    say "  Input:        " + req_header
-    say "  Type:         " + parsed.type_name
-    say "  Subtype:      " + parsed.subtype
-    say "  Charset:      " + parsed.charset
-    say "  Is Text:      " + str(parsed.is_text)
-    say "  Re-formatted: " + mime::format(parsed)
-    say "=============================================="
 end
 
 main()

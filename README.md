@@ -59,6 +59,22 @@ alya add mime --git https://github.com/alya-lang/mime --branch main
 alya install
 ```
 
+### Package Features
+
+| Feature | Default | Description |
+|:---|:---:|:---|
+| `db` | ✅ | Extension↔type database (`lookup`, `type_by_ext`, `content_type`, `extension`). Without it only header parse/format, charset helpers, and essence-direct classification remain. |
+
+```bash
+# Full build (default)
+alya install
+alya test
+
+# Slim build without the database
+alya install --no-default-features
+alya test --no-default-features
+```
+
 ---
 
 ## 🚀 Quick Start

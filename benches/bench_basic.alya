@@ -7,6 +7,32 @@ import "../src/lib.alya" as mime
 function main()
     let runner = bench_runner("mime Micro-Benchmarks")
 
+    @cfg(feature = "db")
+    bench_db_lookups(runner)
+
+    # 5. Media classification (is_text)
+    bench_start(runner, 50000)
+    let n = 0
+    while n < 50000
+        mime::is_text("/public/bundle.js")
+        n += 1
+    end
+    bench_stop(runner, "is_text() classification 50k")
+
+    # 6. Content-Type header parser (struct allocation)
+    bench_start(runner, 50000)
+    let p = 0
+    while p < 50000
+        mime::parse("text/html; charset=utf-8")
+        p += 1
+    end
+    bench_stop(runner, "parse() struct instantiation 50k")
+
+    bench_summary(runner)
+end
+
+@cfg(feature = "db")
+function bench_db_lookups(runner)
     # 1. Fast extension lookup
     bench_start(runner, 100000)
     let i = 0
@@ -42,26 +68,5 @@ function main()
         m += 1
     end
     bench_stop(runner, "extension() reverse lookup 50k")
-
-    # 5. Media classification (is_text)
-    bench_start(runner, 50000)
-    let n = 0
-    while n < 50000
-        mime::is_text("/public/bundle.js")
-        n += 1
-    end
-    bench_stop(runner, "is_text() classification 50k")
-
-    # 6. Content-Type header parser (struct allocation)
-    bench_start(runner, 50000)
-    let p = 0
-    while p < 50000
-        mime::parse("text/html; charset=utf-8")
-        p += 1
-    end
-    bench_stop(runner, "parse() struct instantiation 50k")
-
-    bench_summary(runner)
 end
-
 main()
