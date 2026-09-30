@@ -1,6 +1,6 @@
 [package]
 name = "mime"
-version = "0.2.0"
+version = "0.1.0"
 alya-version = "0.0.19"
 entry = "src/lib.alya"
 description = "MIME type and media type detection library for Alya"
@@ -11,10 +11,6 @@ repository = "https://github.com/alya-lang/mime"
 keywords = ["alya", "alya-lang", "package", "mime", "media-type", "content-type", "http", "web"]
 
 [dependencies]
-
-[features]
-default = ["db"]
-db = []
 
 # [lint]
 # disabled_rules = []
@@ -28,3 +24,7 @@ db = []
 
 # [bench]
 # exclude = []
+
+[features]
+default = ["db"]
+db = []
