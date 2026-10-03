@@ -142,7 +142,7 @@ end
 ##
 ## ### Returns
 ## `1` for binary types, `0` otherwise.
-pub function is_binary(path_or_mime: string) -> int
+pub function is_binary(path_or_mime: string) -> bool
     if is_text(path_or_mime) == true
         return false
     end

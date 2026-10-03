@@ -12,7 +12,7 @@ import "../types.alya"
 ##
 ## ### Returns
 ## `1` for text types, `0` otherwise.
-pub function is_text_type(essence: string) -> int
+pub function is_text_type(essence: string) -> bool
     let s = _mime_trim(essence)
     let slen = len(s)
     if slen >= 5 and substring(s, 0, 5) == "text/"
@@ -32,7 +32,7 @@ end
 ##
 ## ### Returns
 ## `1` for binary types, `0` otherwise.
-pub function is_binary_type(essence: string) -> int
+pub function is_binary_type(essence: string) -> bool
     if is_text_type(essence) == true
         return false
     end

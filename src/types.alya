@@ -44,7 +44,7 @@ end
 ##
 ## ### Returns
 ## `1` for text types, `0` otherwise.
-pub function MimeType.is_text(self: MimeType) -> int
+pub function MimeType.is_text(self: MimeType) -> bool
     return self.is_text == true
 end
 
@@ -55,7 +55,7 @@ end
 ##
 ## ### Returns
 ## `1` for binary types, `0` otherwise.
-pub function MimeType.is_binary(self: MimeType) -> int
+pub function MimeType.is_binary(self: MimeType) -> bool
     return self.is_binary == true
 end
 
