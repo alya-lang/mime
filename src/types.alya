@@ -45,7 +45,7 @@ end
 ## ### Returns
 ## `1` for text types, `0` otherwise.
 pub function MimeType.is_text(self: MimeType) -> int
-    return self.is_text == 1
+    return self.is_text == true
 end
 
 ## Returns `1` when this media type is binary data, `0` otherwise.
@@ -56,7 +56,7 @@ end
 ## ### Returns
 ## `1` for binary types, `0` otherwise.
 pub function MimeType.is_binary(self: MimeType) -> int
-    return self.is_binary == 1
+    return self.is_binary == true
 end
 
 ## Formats this `MimeType` back into a Content-Type string.
@@ -85,9 +85,9 @@ end
 ## ### Returns
 ## The new `MimeType` instance.
 pub function mime_type_new(essence: string, type_name: string, subtype: string, charset: string = "", is_text: int = 0) -> MimeType
-    let is_bin = 1
-    if is_text == 1
-        is_bin = 0
+    let is_bin = true
+    if is_text == true
+        is_bin = false
     end
     return MimeType {
         essence: essence,

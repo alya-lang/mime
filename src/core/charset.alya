@@ -16,12 +16,12 @@ pub function is_text_type(essence: string) -> int
     let s = _mime_trim(essence)
     let slen = len(s)
     if slen >= 5 and substring(s, 0, 5) == "text/"
-        return 1
+        return true
     end
 
     when s
-        is "application/javascript", "text/javascript", "application/json", "application/ld+json", "application/manifest+json", "application/xml", "image/svg+xml", "application/x-sh", "application/sql", "application/x-httpd-php", "application/rtf" then return 1
-        else return 0
+        is "application/javascript", "text/javascript", "application/json", "application/ld+json", "application/manifest+json", "application/xml", "image/svg+xml", "application/x-sh", "application/sql", "application/x-httpd-php", "application/rtf" then return true
+        else return false
     end
 end
 
@@ -33,10 +33,10 @@ end
 ## ### Returns
 ## `1` for binary types, `0` otherwise.
 pub function is_binary_type(essence: string) -> int
-    if is_text_type(essence) == 1
-        return 0
+    if is_text_type(essence) == true
+        return false
     end
-    return 1
+    return true
 end
 
 ## Returns the default charset (`"utf-8"` for text types, `""` otherwise).
@@ -47,7 +47,7 @@ end
 ## ### Returns
 ## The default charset string.
 pub function default_charset_for_mime(essence: string) -> string
-    if is_text_type(essence) == 1
+    if is_text_type(essence) == true
         return "utf-8"
     end
     return ""
