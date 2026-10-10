@@ -68,7 +68,7 @@ end
 ## The Content-Type string with charset when present.
 pub function MimeType.to_string(self: MimeType) -> string
     if len(self.charset) > 0
-        return "{self.essence}; charset={self.charset}"
+        return f"{self.essence}; charset={self.charset}"
     end
     return self.essence
 end

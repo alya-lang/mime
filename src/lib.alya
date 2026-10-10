@@ -187,7 +187,7 @@ end
 ## The parameterized essence string.
 pub function with_charset(mime_essence: string, charset_name: string = "utf-8") -> string
     let s = _mime_trim(mime_essence)
-    return "{s}; charset={charset_name}"
+    return f"{s}; charset={charset_name}"
 end
 
 ## Parses a Content-Type header string into a `MimeType` instance.
@@ -210,7 +210,7 @@ end
 ## The Content-Type string with charset when present.
 pub function format(mime_obj: MimeType) -> string
     if len(mime_obj.charset) > 0
-        return "{mime_obj.essence}; charset={mime_obj.charset}"
+        return f"{mime_obj.essence}; charset={mime_obj.charset}"
     end
     return mime_obj.essence
 end

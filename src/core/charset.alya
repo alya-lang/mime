@@ -67,7 +67,7 @@ pub function format_content_type(essence: string, custom_charset: string = "") -
         cs = default_charset_for_mime(essence)
     end
     if len(cs) > 0
-        return "{essence}; charset={cs}"
+        return f"{essence}; charset={cs}"
     end
     return essence
 end
